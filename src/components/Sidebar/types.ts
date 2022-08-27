@@ -1,4 +1,4 @@
-import { LessonType } from "../Lesson/type";
+import { LessonType } from "../Lesson/types";
 
 export interface GetLessonsQueryResponse {
   lessons: {
