@@ -8,19 +8,18 @@ import {
 } from "phosphor-react";
 
 import "@vime/core/themes/default.css";
-import { useQuery } from "@apollo/client";
-import { GetLessonBySlugResponse, VideoProps } from "./types";
-import { GET_LESSON_BY_SLUG_QUERY } from "./queries";
+import { VideoProps } from "./types";
 import { Spinner } from "../Spinner";
+import { useGetLessonBySlugQuery } from "../../graphql/generated";
 
 export function Video({ lessonSlug: slug }: VideoProps) {
-  const { data } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
+  const { data } = useGetLessonBySlugQuery({
     variables: {
       slug,
     },
   });
 
-  if (!data) {
+  if (!data || !data.lesson) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <Spinner />
@@ -47,21 +46,23 @@ export function Video({ lessonSlug: slug }: VideoProps) {
               {data.lesson.description}
             </p>
 
-            <div className="flex items-center gap-4 mt-6">
-              <img
-                className="h-16 w-16 rounded-full border-2 border-blue-500"
-                src={data.lesson.teacher.avatarURL}
-                alt=""
-              />
-              <div className="leading-relaxed">
-                <strong className="text-2xl block">
-                  {data.lesson.teacher.name}
-                </strong>
-                <span className="text-gray-200 text-sm block">
-                  {data.lesson.teacher.bio}
-                </span>
+            {data.lesson.teacher && (
+              <div className="flex items-center gap-4 mt-6">
+                <img
+                  className="h-16 w-16 rounded-full border-2 border-blue-500"
+                  src={data.lesson.teacher.avatarURL}
+                  alt=""
+                />
+                <div className="leading-relaxed">
+                  <strong className="text-2xl block">
+                    {data.lesson.teacher.name}
+                  </strong>
+                  <span className="text-gray-200 text-sm block">
+                    {data.lesson.teacher.bio}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-4">
